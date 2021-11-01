@@ -1,0 +1,42 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ZombieSpawner : MonoBehaviour
+{
+    public GameObject zombiePrefab;
+    public Transform spawnPoint;
+    public GameObject fx_Shred;
+
+    private GameObject zombie;
+    private Transform  player;
+    void Start()
+    {
+        player = GameObject.FindGameObjectWithTag(TagManager.PLAYER_TAG).transform;
+
+        fx_Shred.SetActive(true);
+
+        AudioManager.instance.ZombieRiseSound();
+
+        zombie = Instantiate(zombiePrefab, spawnPoint.position, Quaternion.identity);
+
+        if(zombie.transform.position.x < player.transform.position.x)
+        {
+            zombie.transform.localScale = new Vector3(-1f, 1f, 1f);
+        }
+
+        else if(zombie.transform.position.x > player.transform.position.x)
+        {
+            zombie.transform.localScale = new Vector3(1f, 1f, 1f);
+        }
+
+        StartCoroutine(WaitForDeactivate());
+    }
+
+  IEnumerator WaitForDeactivate()
+    {
+        yield return new WaitForSeconds(Random.Range(2.5f, 5f));
+        gameObject.SetActive(false);
+
+    }
+}
